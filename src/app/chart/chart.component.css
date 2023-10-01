@@ -1,0 +1,9 @@
+.node-on-hover {
+  r: 8;
+  fill: red;
+  cursor: pointer;
+}
+.circle {
+  r: 5;
+  fill: steelblue;
+}

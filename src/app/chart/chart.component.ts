@@ -354,6 +354,7 @@ export class ChartComponent implements OnInit {
   createChart() {
     const width = 928;
     const height = 600;
+    const hoveredNodes = new Set();
 
     const svg = d3
       .select(this.el.nativeElement)
@@ -381,6 +382,7 @@ export class ChartComponent implements OnInit {
       .on('tick', ticked);
 
     // Create the SVG container.
+
     // const svg = d3
     //   .create('svg')
     //   .attr('width', width)
@@ -398,17 +400,61 @@ export class ChartComponent implements OnInit {
       .join('line')
       .attr('stroke-width', (d) => Math.sqrt(d.value));
 
-    const node = svg
-      .append('g')
-      .attr('stroke', '#fff')
-      .attr('stroke-width', 1.5)
-      .selectAll()
-      .data(nodes)
-      .join('circle')
-      .attr('r', 5)
-      .attr('fill', (d: any) => color(d.group));
+    // const node = svg
+    //   .append('g')
+    //   .attr('stroke', '#fff')
+    //   .attr('stroke-width', 1.5)
+    //   .selectAll()
+    //   .data(nodes)
+    //   .join('circle')
+    //   .attr('r', 5)
+    //   .attr('fill', (d: any) => color(d.group));
 
-    node.append('title').text((d: any) => d.id);
+    const node = svg
+      .selectAll<SVGCircleElement, any>('circle')
+      .data(nodes)
+      .enter()
+      .append('circle')
+      .attr('r', 5)
+      .attr('fill', (d: any) => color(d.group))
+      .call(
+        d3
+          .drag<SVGCircleElement, any>()
+          .on('start', dragstarted)
+          .on('drag', dragged)
+          .on('end', dragended)
+      )
+      .on('mouseover', function (event, d) {
+        hoveredNodes.add(d);
+
+        d3.select(this)
+          .attr('r', 8)
+          .attr('fill', '#d55bd9')
+          .style('cursor', 'pointer');
+
+        link.attr('stroke', (l) =>
+          (l.source === d && l.target.length === d.length) ||
+          (l.target === d && l.source.length   === d.length)
+            ? 'blue'
+            : '#999'
+        );
+      })
+      .on('mouseout', function (event, d) {
+        hoveredNodes.delete(d);
+
+        d3.select(this)
+          .attr('r', 5)
+          .attr('fill', (d: any) => color(d.group))
+          .style('cursor', 'auto');
+
+        link.attr('stroke', '#999');
+      });
+
+    // -------------------------------------------------------
+
+    // --------------------------------------------------
+
+    // node.append('title').text((d: any) => d.id);
 
     // // Add a drag behavior.
     // node.call(
