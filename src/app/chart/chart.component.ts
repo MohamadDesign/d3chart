@@ -352,12 +352,13 @@ export class ChartComponent implements OnInit {
   }
 
   createChart() {
-    const width = 928;
-    const height = 600;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
     const hoveredNodes = new Set();
 
     const svg = d3
       .select(this.el.nativeElement)
+      .select('div')
       .append('svg')
       .attr('width', width)
       .attr('height', height);
@@ -449,10 +450,6 @@ export class ChartComponent implements OnInit {
 
         link.attr('stroke', '#999');
       });
-
-    // -------------------------------------------------------
-
-    // --------------------------------------------------
 
     // node.append('title').text((d: any) => d.id);
 
