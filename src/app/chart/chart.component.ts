@@ -425,7 +425,15 @@ export class ChartComponent implements OnInit {
           .on('drag', dragged)
           .on('end', dragended)
       )
-      .on('mouseover', function (event, d) {
+      .on('mouseover', function (event, d: any) {
+        const tooltip = d3.select('.tooltip-container');
+        tooltip.style('opacity', 0.9);
+
+        tooltip.html(`<app-tooltip>${d.id}</app-tooltip>`);
+
+        tooltip.style('left', event.pageX - 30 + 'px');
+        tooltip.style('top', event.pageY - 60 + 'px');
+
         hoveredNodes.add(d);
 
         d3.select(this)
@@ -435,12 +443,15 @@ export class ChartComponent implements OnInit {
 
         link.attr('stroke', (l) =>
           (l.source === d && l.target.length === d.length) ||
-          (l.target === d && l.source.length   === d.length)
+          (l.target === d && l.source.length === d.length)
             ? 'blue'
             : '#999'
         );
       })
       .on('mouseout', function (event, d) {
+        const tooltip = d3.select('.tooltip-container');
+        tooltip.style('opacity', 0);
+
         hoveredNodes.delete(d);
 
         d3.select(this)
