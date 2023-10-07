@@ -1,3 +1,15 @@
 <div class="force-directed-graph">
   <div class="tooltip-container"></div>
 </div>
+
+<div>
+  <input [(ngModel)]="newNode.id" placeholder="Node ID" required />
+  <input [(ngModel)]="newNode.group" placeholder="Node Group" required />
+  <input [(ngModel)]="newLink.source" placeholder="Node Source" required />
+  <input [(ngModel)]="newLink.target" placeholder="Node Target" required />
+  <button (click)="addNode()">Add Node</button>
+</div>
+<div>
+  <input [(ngModel)]="nodeToRemove" placeholder="Node ID to remove" />
+  <button (click)="removeNode()">Remove Node</button>
+</div>

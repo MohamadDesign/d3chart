@@ -351,6 +351,56 @@ export class ChartComponent implements OnInit {
     this.createChart();
   }
 
+  removeNode() {
+    const nodeIndex = this.data.nodes.findIndex(
+      (node) => node.id === this.nodeToRemove
+    );
+
+    if (nodeIndex !== -1) {
+      this.data.nodes.splice(nodeIndex, 1);
+      this.data.links = this.data.links.filter(
+        (link) =>
+          link.source !== this.nodeToRemove && link.target !== this.nodeToRemove
+      );
+
+      this.createChart();
+      this.nodeToRemove = '';
+    }
+  }
+  nodeToRemove: string = '';
+
+  newNode: { id: string; group: number } = {
+    id: '',
+    group: 0,
+  };
+  newLink: { source: string; target: string; value: number } = {
+    source: '',
+    target: '',
+    value: 1,
+  };
+
+  addNode() {
+    if (
+      this.newNode.id &&
+      !this.data.nodes.find((node) => node.id === this.newNode.id)
+    ) {
+      this.data.nodes.push(this.newNode);
+      this.data.links.push(this.newLink);
+      this.newNode = { id: '', group: 0 };
+      this.newLink = { source: '', target: '', value: 1 };
+
+      this.createChart();
+      console.log('nodes: ', this.data.nodes);
+      console.log('links', this.data.links);
+    } else {
+      console.log('You are trying to add repeted node');
+      console.log('nodes: ', this.data.nodes);
+      console.log('links', this.data.links);
+    }
+
+    return this.data;
+  }
+
   createChart() {
     const width = window.innerWidth;
     const height = window.innerHeight;
